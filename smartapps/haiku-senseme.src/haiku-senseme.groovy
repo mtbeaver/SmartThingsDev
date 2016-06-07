@@ -12,15 +12,36 @@ preferences {
     page(name: "deviceDiscovery", title: "Haiku Smart Fan Discovery", nextPage: "deviceDiscovery")
 }    
 
-def _broadcastAddr = ;
-def _port = 31415;
+private String _broadcastAddr = "FFFFFFFF"; //!< Broadcast addr 255.255.255.255 as hex string
+private String _port = "7AB7"; //!< Port 31415 as hex-string
 
 def deviceDiscovery() {
     
-    // Set the device id to the broadcast address and port
-    device.deviceNetworkId = "";
+
 }
 
-void sendDiscoveryMessage() {
-    sendHubCommand(new physicangraph.device.HubAction("<ALL;DEVICE;ID;GET>", physicalgraph.device.Protocol.LAN))
+//! Called when the Smart App is initialized.  Here, we subscribe to network events,
+def initialized() {
+
 }
+
+
+void sendDiscoveryRequest() {
+    def action = new physicangraph.device.HubAction(
+        "<ALL;DEVICE;ID;GET>",
+        physicalgraph.device.Protocol.LAN,
+        "${_broadcstAddr}:${_port}",
+        [
+            callback: discoveryResponseHandler,
+            type: "LAN_TYPE_UDPCLIENT"
+        ])
+}
+
+void discoveryResponseHandler(physicalgraph.device.HubResponse hubResponse) {
+    
+}
+
+void addDevice() {
+    
+}
+
